@@ -9,7 +9,7 @@ main (){
 			3)
 				net;;
 			4)	
-				echo '4';;
+				file;;
 			*)
 				echo "no such choice";;
 		esac
@@ -34,16 +34,23 @@ net (){
 	allnet=$(ifconfig -a | sed -E 's/[[:space:]:].*//;/^$/d'| awk '{print $0 " \"*\""}')
 	choice=$(dialog --menu "test" 20 50 2 ${allnet} 2>&1 >/dev/tty)
 	if [ -z $choice ]; then
-		echo 'no'
+		echo $(clear)
 	else
 		netinfo
 	fi	
 }
 
 netinfo (){
-	info=$()
+	ipinfo=$(ifconfig $choice | awk '$0 ~ /inet /{print $2}')
+	maskinfo=$(ifconfig $choice | awk '$0 ~ /netmask /{print $4}')
+	macinfo=$(ifconfig $choice | awk '$0 ~ /ether /{print $2}')
+	dialog --title "Interface Name:${choice}" --msgbox \
+		"IPv4___: ${ipinfo}\nNetmask: ${maskinfo}\nMac____: ${macinfo}" 20 60
+
 }
 file (){
+	file=$(ls -f|awk '{print $0}')
+	echo $(file $file)
 }
 main
 
