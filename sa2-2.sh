@@ -31,9 +31,17 @@ mem (){
 	
 }
 net (){
-	allnet=$(ifconfig -a | sed -E 's/[[:space:]:].*//;/^$/d'| awk '$0=NR": "$0')
-	echo $allnet
+	allnet=$(ifconfig -a | sed -E 's/[[:space:]:].*//;/^$/d'| awk '{print $0 " \"*\""}')
 	choice=$(dialog --menu "test" 20 50 2 ${allnet} 2>&1 >/dev/tty)
+	if [ -z $choice ]; then
+		echo 'no'
+	else
+		netinfo
+	fi	
+}
+
+netinfo (){
+	info=$()
 }
 file (){
 }
