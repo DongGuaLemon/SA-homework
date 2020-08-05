@@ -29,20 +29,13 @@ mem (){
 	memfree=$(sysctl -a hw.usermem | awk '{print $2/1024/1024/1024}')
 	memused=$(echo $memreal $memfree | awk '{print $1-$2}')
 	usegauge=$(echo $memused $memreal | awk '{print int($1/$2*100)}')	
-	
-		dialog --stdout --title "Memory Info and Usage" --clear --gauge \
-	 "Total: ${memreal} GB\nUsed: ${memused} GB\nFree: ${memfree} GB" 20 60 ${usegauge} 2>&1 >/dev/tty
-	read -r input
-	echo $input
 	while true; do
-		
-		read -r input
-	        if [ "$input" == "a" ]; then 
-		        echo "hello"
-			exit 0           
+		dialog --title "Memory Info and Usage" --mixedgauge "Total: ${memreal} GB\nUsed: ${memused} GB\nFree: ${memfree} GB" 20 50 ${usegauge} 2>&1 >/dev/tty
+		read -r input 
+		if [ "$input" == "" ]; then 
+		      exit 0           
 		fi
 	done
-
 }
 net (){
 	allnet=$(ifconfig -a | sed -E 's/[[:space:]:].*//;/^$/d'| awk '{print $0 " \"*\""}')
